@@ -425,7 +425,7 @@ export async function POST(request: NextRequest) {
           error:
             'The AI response is missing required fields or has incorrect types. Please try again.',
           rawResponse: JSON.stringify(parsed).slice(0, 1000),
-          details: validationError instanceof z.ZodError ? validationError.errors : String(validationError),
+          details: validationError instanceof z.ZodError ? validationError.issues : String(validationError),
         },
         { status: 502 },
       );
