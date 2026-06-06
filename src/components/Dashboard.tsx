@@ -1,0 +1,137 @@
+'use client';
+
+import type { EvaluationResult, PillarScore } from '@/types';
+import ScoreRing from './ScoreRing';
+import PillarBar from './PillarBar';
+import JustificationCard from './JustificationCard';
+import GitHubCard from './GitHubCard';
+import './Dashboard.css';
+
+interface DashboardProps {
+  result: EvaluationResult;
+}
+
+const PILLAR_DELAYS = [0, 0.2, 0.4, 0.6];
+
+export default function Dashboard({ result }: DashboardProps) {
+  const pillars: PillarScore[] = [
+    result.pillars.openSource,
+    result.pillars.selfMadeProjects,
+    result.pillars.productionExperience,
+    result.pillars.technicalSkills,
+  ];
+
+  return (
+    <div className="dashboard">
+      {/* Header */}
+      <header className="dashboard__header" style={{ position: 'relative' }}>
+        <button 
+          className="btn btn-secondary btn-sm print-hide" 
+          onClick={() => window.print()}
+          style={{ position: 'absolute', right: 0, top: 0, zIndex: 10 }}
+        >
+          🖨️ Export PDF
+        </button>
+        <h1 className="dashboard__title">Evaluation Results</h1>
+        <p className="dashboard__subtitle">{result.summary}</p>
+        
+        <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-sm)', backgroundColor: 'var(--bg-secondary)', borderLeft: '4px solid #fff', fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'inline-block' }}>
+          <strong>Note:</strong> Since evaluations are generated dynamically by AI, your score and deductions may vary slightly depending on which model you choose to use (e.g., DeepSeek vs Gemini vs Groq).
+        </div>
+      </header>
+
+      {/* Two-column grid */}
+      <div className="dashboard__grid">
+        {/* ── Left Column ──────────────────────────────────────── */}
+        <div className="dashboard__column">
+          {/* Score Ring */}
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
+            <ScoreRing score={result.overallScore} />
+          </div>
+
+          {/* Pillar Bars */}
+          <div className="pillar-bars">
+            <div className="pillar-bars__title">Score Breakdown</div>
+            {pillars.map((pillar, i) => (
+              <PillarBar
+                key={pillar.label}
+                label={pillar.label}
+                score={pillar.score}
+                maxScore={pillar.maxScore}
+                delay={PILLAR_DELAYS[i]}
+              />
+            ))}
+          </div>
+
+          {/* Strengths */}
+          {result.strengths.length > 0 && (
+            <div className="insight-card" style={{ animationDelay: '0.3s' }}>
+              <h3
+                className="insight-card__title"
+                style={{ color: 'var(--success)' }}
+              >
+                ✦ Strengths
+              </h3>
+              <ul className="insight-card__list">
+                {result.strengths.map((item, i) => (
+                  <li key={i} className="insight-card__item">
+                    <span
+                      className="insight-card__dot"
+                      style={{ backgroundColor: 'var(--success)' }}
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Improvements */}
+          {result.improvements.length > 0 && (
+            <div className="insight-card" style={{ animationDelay: '0.4s' }}>
+              <h3
+                className="insight-card__title"
+                style={{ color: 'var(--warning)' }}
+              >
+                ▲ Areas for Improvement
+              </h3>
+              <ul className="insight-card__list">
+                {result.improvements.map((item, i) => (
+                  <li key={i} className="insight-card__item">
+                    <span
+                      className="insight-card__dot"
+                      style={{ backgroundColor: 'var(--warning)' }}
+                    />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* ── Right Column ─────────────────────────────────────── */}
+        <div className="dashboard__column">
+          {/* Summary Card */}
+          <div className="summary-card">
+            <h3 className="summary-card__title">📋 Summary</h3>
+            <p className="summary-card__text">{result.summary}</p>
+          </div>
+
+          {/* Justification Cards */}
+          {pillars.map((pillar, i) => (
+            <JustificationCard
+              key={pillar.label}
+              pillar={pillar}
+            />
+          ))}
+
+          {/* GitHub Card */}
+          {result.githubMetrics && (
+            <GitHubCard metrics={result.githubMetrics} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

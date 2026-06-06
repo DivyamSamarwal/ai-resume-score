@@ -1,0 +1,203 @@
+/* =============================================================
+   AI Resume Evaluator — Dashboard Component Neo-Brutalist Styles
+   ============================================================= */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard {
+  width: 100%;
+  animation: fadeInUp 0.4s ease-out;
+}
+
+.dashboard__header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.dashboard__title {
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0px var(--primary-color);
+}
+
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .dashboard__grid { grid-template-columns: 1fr; }
+}
+
+.dashboard__column {
+  display: flex; flex-direction: column; gap: 32px;
+}
+
+/* ── ScoreRing ───────────────────────────────────────────────── */
+.score-ring {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  background: #fff;
+  padding: 32px;
+  border: 3px solid #000;
+  border-radius: 8px;
+  box-shadow: 6px 6px 0 0 #000;
+}
+
+.score-ring__svg { transform: rotate(-90deg); }
+.score-ring__track { fill: none; stroke: #e5e7eb; }
+.score-ring__progress { fill: none; stroke-linecap: butt; transition: stroke-dashoffset 1.5s ease-out; }
+
+.score-ring__value-group { transform: rotate(90deg); transform-origin: center; }
+.score-ring__value { fill: #000; font-weight: 900; font-family: var(--font-mono); text-anchor: middle; dominant-baseline: central; }
+.score-ring__max { fill: #666; font-weight: 700; font-family: var(--font-mono); text-anchor: middle; }
+.score-ring__label { font-weight: 800; text-transform: uppercase; }
+
+/* ── PillarBar ───────────────────────────────────────────────── */
+.pillar-bars {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 6px 6px 0 0 #000;
+  display: flex; flex-direction: column; gap: 24px;
+}
+
+.pillar-bars__title { font-weight: 800; font-size: 20px; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 8px; }
+
+.pillar-bar { display: flex; flex-direction: column; gap: 8px; }
+.pillar-bar__header { display: flex; justify-content: space-between; font-weight: 700; }
+.pillar-bar__score { font-family: var(--font-mono); }
+.pillar-bar__track {
+  width: 100%; height: 16px;
+  background: #e5e7eb;
+  border: 2px solid #000;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.pillar-bar__fill {
+  height: 100%;
+  border-right: 2px solid #000;
+  transition: width 1s ease-out;
+}
+
+/* ── JustificationCard ───────────────────────────────────────── */
+.justification-card {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 6px 6px 0 0 #000;
+  transition: transform 0.2s ease;
+}
+.justification-card:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 0 #000; }
+
+.justification-card__header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 800; font-size: 18px; }
+.justification-card__title { flex: 1; }
+.justification-card__badge {
+  background: var(--primary-color);
+  padding: 4px 12px; border: 2px solid #000; border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+.justification-card__body { overflow: hidden; transition: max-height 0.3s ease; }
+.justification-card__body--expanded { max-height: 1000px; margin-top: 24px; border-top: 3px solid #000; padding-top: 24px; }
+.justification-card__body--collapsed { max-height: 0; }
+
+.justification-card__section { margin-bottom: 24px; }
+.justification-card__section-label { font-weight: 800; text-transform: uppercase; margin-bottom: 12px; display: inline-block; background: #000; color: #fff; padding: 4px 8px; }
+
+.justification-card__list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.justification-card__item { display: flex; gap: 12px; font-weight: 600; font-size: 15px; }
+.justification-card__icon { width: 24px; height: 24px; border: 2px solid #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800; }
+.justification-card__icon--positive { background: var(--success); }
+.justification-card__icon--negative { background: var(--danger); }
+.justification-card__points { color: var(--danger); font-family: var(--font-mono); font-weight: 800; }
+
+/* ── GitHubCard ──────────────────────────────────────────────── */
+.github-card {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 6px 6px 0 0 #000;
+}
+.github-card__header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; border-bottom: 3px solid #000; padding-bottom: 16px; }
+.github-card__icon { width: 40px; height: 40px; background: #000; color: #fff; padding: 6px; border-radius: 4px; }
+.github-card__username { font-size: 24px; font-weight: 900; }
+
+.github-card__stats { display: flex; gap: 16px; margin-bottom: 24px; }
+.github-card__stat { flex: 1; background: var(--warning-dim); border: 2px solid #000; padding: 16px; box-shadow: 3px 3px 0 0 #000; }
+.github-card__stat-value { font-size: 32px; font-weight: 900; font-family: var(--font-mono); }
+.github-card__stat-label { font-weight: 800; text-transform: uppercase; }
+
+.github-card__lang-title, .github-card__repos-title { font-weight: 800; text-transform: uppercase; margin-bottom: 16px; }
+.github-card__lang-bar { display: flex; height: 16px; border: 2px solid #000; border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+.github-card__lang-segment { border-right: 2px solid #000; }
+.github-card__lang-segment:last-child { border-right: none; }
+.github-card__lang-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 32px; }
+.github-card__lang-item { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+.github-card__lang-dot { width: 12px; height: 12px; border: 2px solid #000; border-radius: 50%; }
+
+.github-card__repos { display: flex; flex-direction: column; gap: 16px; }
+.github-card__repo { background: var(--bg-elevated); border: 2px solid #000; padding: 16px; display: flex; justify-content: space-between; align-items: center; box-shadow: 3px 3px 0 0 #000; }
+.github-card__repo-name { font-weight: 800; font-size: 16px; }
+.github-card__repo-meta { font-family: var(--font-mono); font-weight: 600; font-size: 12px; margin-top: 4px; }
+.github-card__lang-badge { background: #fff; border: 2px solid #000; padding: 2px 8px; font-weight: 800; }
+.github-card__repo-stars { font-weight: 800; display: flex; align-items: center; gap: 4px; }
+
+/* ── Summary & Insights ──────────────────────────────────────── */
+.summary-card, .insight-card {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 6px 6px 0 0 #000;
+}
+.summary-card__title { font-size: 20px; font-weight: 900; border-bottom: 3px solid #000; padding-bottom: 8px; margin-bottom: 16px; }
+.summary-card__text { font-size: 16px; font-weight: 500; }
+
+.insight-card__title { font-size: 20px; font-weight: 900; text-transform: uppercase; border-bottom: 3px solid #000; padding-bottom: 8px; margin-bottom: 16px; }
+.insight-card__list { display: flex; flex-direction: column; gap: 12px; list-style: none; }
+.insight-card__item { display: flex; gap: 12px; font-weight: 600; }
+.insight-card__dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+/* ── Print Styles ────────────────────────────────────────────── */
+@media print {
+  body {
+    background: white;
+  }
+  .print-hide, .btn, .header-container, .steps, .toast {
+    display: none !important;
+  }
+  .dashboard {
+    animation: none;
+  }
+  .dashboard__grid {
+    display: block;
+  }
+  .card, .insight-card, .summary-card, .score-ring, .justification-card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    transform: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 24px;
+  }
+  .pillar-bar__fill {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
