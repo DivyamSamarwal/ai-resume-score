@@ -1,42 +1,91 @@
-# Base100 - AI Resume Evaluator 💯
+<div align="center">
+  <h1>Base100 - AI Resume Evaluator 💯</h1>
+  <p><strong>A brutally honest, 100-point AI evaluation for software engineering resumes.</strong></p>
 
-**[Try the Live Demo!](https://base100-resume.vercel.app/)**
+  [![Live Demo](https://img.shields.io/badge/Live_Demo-base100--resume.vercel.app-blue?style=for-the-badge&logo=vercel)](https://base100-resume.vercel.app/)
+  
+  ![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)
+  ![React](https://img.shields.io/badge/React-19-blue?style=flat-square&logo=react)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript)
+</div>
+
+<br />
 
 Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-point calibrated evaluation of software engineering resumes. Inspired by the concepts behind [interviewstreet/hiring-agent](https://github.com/interviewstreet/hiring-agent), Base100 goes further by offering a stunning neo-brutalist UI, multi-LLM support, automatic GitHub analysis, and dynamic Job Description matching.
 
 ![Base100 Dashboard Preview](https://via.placeholder.com/800x450.png?text=Base100+Dashboard)
 
-## ✨ Features
+---
 
-- **Multi-Format Support**: Upload standard **PDF** resumes, native Microsoft Word **DOCX** files, or **Image** files (`.png`, `.jpg`).
-- **Client-Side Image OCR**: Upload screenshots or scanned images of resumes. Base100 uses `Tesseract.js` directly in your browser to extract text with zero server-side latency or timeout risk.
-- **"Paste Text" Fallback**: Have a stubborn, corrupted PDF? Simply use the Paste Text tab. The app aggressively sanitizes hidden characters and spacing dynamically before processing.
-- **Multi-Model Support**: Bring your own API key to evaluate resumes using **Gemini 2.0 Flash**, **DeepSeek**, **Groq (LLaMA-3)**, or any model via **OpenRouter**.
-- **Deep GitHub Integration**: Automatically detects GitHub usernames from the resume, securely fetches the candidate's real repository data, commit history, and top languages using a GitHub PAT, and factors it into the evaluation.
+## 📑 Table of Contents
+- [✨ Key Features](#-key-features)
+- [🧠 How It Works (The 100-Point Rubric)](#-how-it-works-the-100-point-rubric)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🚀 Getting Started (Local Dev)](#-getting-started-local-dev)
+- [🚢 Deployment](#-deployment)
+- [🤝 Contributing](#-contributing)
+
+---
+
+## ✨ Key Features
+
+- **Multi-Format Uploads**: Upload standard **PDFs**, native Microsoft Word **DOCX** files, or **Image** files (`.png`, `.jpg`).
+- **Client-Side Image OCR**: Base100 uses `Tesseract.js` directly in your browser to extract text from image screenshots with zero server-side latency or timeout risk.
+- **"Paste Text" Fallback**: Have a stubborn, corrupted PDF? Simply paste the raw text. The app aggressively sanitizes hidden characters and spacing dynamically before processing.
+- **Bring Your Own Model (BYOK)**: Evaluate resumes using **Gemini 2.0 Flash**, **DeepSeek**, **Groq (LLaMA-3)**, or any model via **OpenRouter**.
+- **Deep GitHub Integration**: Automatically detects GitHub usernames from the resume and securely fetches the candidate's real repository data, commit history, and top languages to factor into the final score.
 - **Dynamic Job Description Matching**: Paste a specific Job Description to instantly tailor the AI's scoring rubric. The AI will heavily scrutinize the candidate against the exact requirements of the role.
-- **100-Point Rigorous Rubric**: Candidates are graded across 4 specific pillars:
-  - Open Source Contributions (25 pts)
-  - Self-Made Projects (25 pts)
-  - Production Experience (25 pts)
-  - Technical Skills & Practices (25 pts)
-- **Local History & PDF Export**: Your evaluations are securely saved to your browser's local storage. Generate a clean, professional PDF report of the evaluation dashboard with a single click.
-- **Privacy First**: API keys and resumes are processed entirely client-side or securely routed through serverless edge functions without being logged or stored on our servers.
+- **Local History & PDF Export**: Your evaluations are securely saved to your browser's local `localStorage`. Generate a clean, professional PDF report of the evaluation dashboard with a single click.
+- **Privacy First**: API keys and resumes are processed entirely client-side or securely routed through edge functions. Nothing is logged or stored on our databases.
 
-## 🚀 Getting Started
+---
+
+## 🧠 How It Works (The 100-Point Rubric)
+
+Instead of vague feedback, Base100 forces the AI to objectively score the candidate across 4 heavily weighted pillars. The AI must provide concrete "Positive Evidence" and exact point "Deductions" for every score.
+
+1. **🌍 Open Source Contributions (25 pts)**
+   - Evidence of merged PRs to major open-source projects.
+   - Quality of GitHub commit history and technical impact.
+2. **🏗️ Self-Made Projects (25 pts)**
+   - Complexity of personal projects (beyond standard bootcamp CRUD apps).
+   - Real-world usage, live links, and architectural depth.
+3. **💼 Production Experience (25 pts)**
+   - Verifiable impact at previous companies (e.g., *"Reduced latency by 40%"* vs *"Worked on the backend"*).
+   - Scale of systems worked on.
+4. **⚙️ Technical Skills & Practices (25 pts)**
+   - Evidence of testing (Unit, E2E), CI/CD pipelines, and cloud infrastructure.
+   - Alignment with the provided Job Description (if applicable).
+
+---
+
+## 🛠️ Tech Stack
+
+| Category | Technology |
+|---|---|
+| **Framework** | [Next.js 14](https://nextjs.org/) (App Router) |
+| **Language** | TypeScript |
+| **Styling** | Vanilla CSS (Custom Neo-Brutalist Design System) |
+| **Document Parsing** | `unpdf` (PDF), `mammoth` (DOCX), `tesseract.js` (Image OCR) |
+| **Validation** | `zod` |
+| **Icons** | `lucide-react` |
+
+---
+
+## 🚀 Getting Started (Local Dev)
 
 ### Prerequisites
-
 - Node.js 18+
 - npm, yarn, or pnpm
 - API Keys for the models you wish to use (Gemini, DeepSeek, Groq, etc.)
-- (Optional) A GitHub Personal Access Token (PAT) to prevent rate limiting when analyzing GitHub profiles.
+- *(Optional)* A GitHub Personal Access Token (PAT) to prevent rate limiting.
 
 ### Installation
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/base100.git
-   cd base100
+   git clone https://github.com/DivyamSamarwal/ai-resume-score.git
+   cd ai-resume-score
    ```
 
 2. **Install dependencies:**
@@ -51,26 +100,26 @@ Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-
 
 4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🛠️ Tech Stack
-
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
-- **Styling**: Vanilla CSS (Neo-Brutalist aesthetics)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Document Parsing**: `unpdf` (PDF), `mammoth` (DOCX), `tesseract.js` (Client-side Image OCR)
-- **Schema Validation**: Zod
+---
 
 ## 🚢 Deployment
 
 Base100 is designed to be effortlessly deployed on **Vercel** with absolutely **zero configuration required**. 
 
-Since the application requires users to securely input their own API keys on the configuration screen, there are no `.env` files, secrets, or server-side variables you need to configure to host it.
+Because the application requires users to securely input their own API keys on the configuration screen, there are no `.env` files, secrets, or server-side variables you need to configure to host it.
 
-1. Fork or push this repository to your GitHub account.
-2. Go to [Vercel.com](https://vercel.com) and click **Add New Project**.
-3. Import your `base100` repository.
-4. Click **Deploy**. Vercel will automatically detect the Next.js framework, build the app, and give you a live URL in under 2 minutes.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDivyamSamarwal%2Fai-resume-score)
 
-## 🤝 Acknowledgements
+1. Click the Deploy button above, or fork the repository.
+2. Import the project into Vercel.
+3. Click **Deploy**. Vercel will automatically detect Next.js and build the app in under 2 minutes.
 
-- Inspired by the open-source work of [interviewstreet/hiring-agent](https://github.com/interviewstreet/hiring-agent).
-- Built for recruiters, hiring managers, and engineers who want an honest, unbiased assessment of talent.
+---
+
+## 🤝 Contributing
+
+Contributions are always welcome! Feel free to open an issue or submit a Pull Request if you'd like to add new features, support new LLMs, or improve the parsing algorithms.
+
+## 📈 Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=DivyamSamarwal/ai-resume-score&type=Date)](https://star-history.com/#DivyamSamarwal/ai-resume-score&Date)
