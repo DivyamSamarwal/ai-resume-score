@@ -8,16 +8,18 @@ Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-
 
 ## ✨ Features
 
+- **Multi-Format Support**: Upload standard **PDF** resumes, native Microsoft Word **DOCX** files, or **Image** files (`.png`, `.jpg`).
+- **Client-Side Image OCR**: Upload screenshots or scanned images of resumes. Base100 uses `Tesseract.js` directly in your browser to extract text with zero server-side latency or timeout risk.
+- **"Paste Text" Fallback**: Have a stubborn, corrupted PDF? Simply use the Paste Text tab. The app aggressively sanitizes hidden characters and spacing dynamically before processing.
 - **Multi-Model Support**: Bring your own API key to evaluate resumes using **Gemini 2.0 Flash**, **DeepSeek**, **Groq (LLaMA-3)**, or any model via **OpenRouter**.
-- **Deep GitHub Integration**: Automatically detects GitHub usernames from the uploaded PDF, securely fetches the candidate's real repository data, commit history, and top languages using a GitHub PAT, and factors it into the evaluation.
+- **Deep GitHub Integration**: Automatically detects GitHub usernames from the resume, securely fetches the candidate's real repository data, commit history, and top languages using a GitHub PAT, and factors it into the evaluation.
 - **Dynamic Job Description Matching**: Paste a specific Job Description to instantly tailor the AI's scoring rubric. The AI will heavily scrutinize the candidate against the exact requirements of the role.
 - **100-Point Rigorous Rubric**: Candidates are graded across 4 specific pillars:
   - Open Source Contributions (25 pts)
   - Self-Made Projects (25 pts)
   - Production Experience (25 pts)
   - Technical Skills & Practices (25 pts)
-- **Local History**: Your evaluations are securely saved to your browser's local storage, allowing you to quickly jump between past candidates using the History Sidebar.
-- **Export to PDF**: Generate a clean, single-page professional report of the evaluation dashboard with a single click.
+- **Local History & PDF Export**: Your evaluations are securely saved to your browser's local storage. Generate a clean, professional PDF report of the evaluation dashboard with a single click.
 - **Privacy First**: API keys and resumes are processed entirely client-side or securely routed through serverless edge functions without being logged or stored on our servers.
 
 ## 🚀 Getting Started
@@ -54,7 +56,7 @@ Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-
 - **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
 - **Styling**: Vanilla CSS (Neo-Brutalist aesthetics)
 - **Icons**: [Lucide React](https://lucide.dev/)
-- **PDF Parsing**: `pdf-parse` (Edge-compatible extraction)
+- **Document Parsing**: `unpdf` (PDF), `mammoth` (DOCX), `tesseract.js` (Client-side Image OCR)
 - **Schema Validation**: Zod
 
 ## 🚢 Deployment

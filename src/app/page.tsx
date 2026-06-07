@@ -66,6 +66,7 @@ export default function HomePage() {
     selectedModel: 'gemini',
   });
   const [file, setFile] = useState<File | null>(null);
+  const [rawText, setRawText] = useState<string | null>(null);
   const [logs, setLogs] = useState<TerminalLog[]>([]);
   const [result, setResult] = useState<EvaluationResult | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
@@ -126,7 +127,7 @@ export default function HomePage() {
 
   // ─── Live Evaluation Pipeline ─────────────────────────────
   const runEvaluation = useCallback(async () => {
-    if (!file) return;
+    if (!file && !rawText) return;
 
     setStep('evaluating');
     setLogs([]);
@@ -135,32 +136,83 @@ export default function HomePage() {
     const signal = abortRef.current.signal;
 
     try {
-      // 1. Parse PDF
-      const pdfLogId = 'pdf-parse';
-      addLog(pdfLogId, 'Extracting text from resume PDF...');
+      let pdfData: { text: string; wordCount: number; pageCount: number; githubUsername?: string };
 
-      const formData = new FormData();
-      formData.append('file', file);
+      if (rawText) {
+        // 1. Text Paste Bypass
+        const textLogId = 'text-parse';
+        addLog(textLogId, 'Sanitizing pasted resume text...');
+        await new Promise(r => setTimeout(r, 400));
+        
+        const sanitizedText = rawText.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\n{3,}/g, '\n\n');
+        const wordCount = sanitizedText.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
+        const githubMatch = sanitizedText.match(/github\.com\/([A-Za-z0-9_.-]+)/i);
+        const githubUsername = githubMatch ? githubMatch[1].trim() : undefined;
+        
+        pdfData = { text: sanitizedText, wordCount, pageCount: 1, githubUsername };
+        
+        updateLog(textLogId, 'success', `Processed ${wordCount.toLocaleString()} words directly from pasted text`);
+      } else if (file) {
+        // 1. Parse Image / PDF / DOCX
+        const isImage = file.type.startsWith('image/');
+        const isDocx = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.name.toLowerCase().endsWith('.docx');
+        const parseLogId = 'file-parse';
 
-      const pdfRes = await fetch('/api/parse-pdf', {
-        method: 'POST',
-        body: formData,
-        signal,
-      });
+        if (isImage) {
+          addLog(parseLogId, 'Initializing Optical Character Recognition (OCR)...');
+          try {
+            const Tesseract = (await import('tesseract.js')).default;
+            const { data: { text } } = await Tesseract.recognize(file, 'eng');
+            
+            const sanitizedText = text.replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\n{3,}/g, '\n\n');
+            const wordCount = sanitizedText.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
+            
+            if (wordCount < 10) {
+              updateLog(parseLogId, 'error', 'Failed to extract meaningful text from image');
+              addToast('Could not extract enough text from the image. Please use a clearer screenshot or paste the text.', 'error');
+              return;
+            }
 
-      if (!pdfRes.ok) {
-        const err = await pdfRes.json().catch(() => ({ error: 'PDF parsing failed' }));
-        updateLog(pdfLogId, 'error', err.error || 'Failed to parse PDF');
-        addToast(err.error || 'Failed to parse PDF', 'error');
+            const githubMatch = sanitizedText.match(/github\.com\/([A-Za-z0-9_.-]+)/i);
+            const githubUsername = githubMatch ? githubMatch[1].trim() : undefined;
+            
+            pdfData = { text: sanitizedText, wordCount, pageCount: 1, githubUsername };
+            updateLog(parseLogId, 'success', `Extracted ${wordCount.toLocaleString()} words via OCR`);
+          } catch (err) {
+            updateLog(parseLogId, 'error', 'OCR processing failed');
+            addToast('Image processing failed. Please try a different format.', 'error');
+            return;
+          }
+        } else {
+          addLog(parseLogId, `Extracting text from ${isDocx ? 'Word Document' : 'PDF'}...`);
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          const endpoint = isDocx ? '/api/parse-docx' : '/api/parse-pdf';
+          const fileRes = await fetch(endpoint, {
+            method: 'POST',
+            body: formData,
+            signal,
+          });
+
+          if (!fileRes.ok) {
+            const err = await fileRes.json().catch(() => ({ error: 'File parsing failed' }));
+            updateLog(parseLogId, 'error', err.error || 'Failed to parse file');
+            addToast(err.error || 'Failed to parse file', 'error');
+            return;
+          }
+
+          pdfData = await fileRes.json();
+          updateLog(
+            parseLogId,
+            'success',
+            `Extracted ${pdfData.wordCount.toLocaleString()} words from ${pdfData.pageCount} page(s)`
+          );
+        }
+      } else {
         return;
       }
-
-      const pdfData = await pdfRes.json();
-      updateLog(
-        pdfLogId,
-        'success',
-        `Extracted ${pdfData.wordCount.toLocaleString()} words from ${pdfData.pageCount} page(s)`
-      );
 
       // 2. Fetch GitHub Data
       const targetUsername = config.githubUsername.trim() || pdfData.githubUsername;
@@ -316,6 +368,7 @@ export default function HomePage() {
     abortRef.current?.abort();
     setStep('configure');
     setFile(null);
+    setRawText(null);
     setLogs([]);
     setResult(null);
   }, []);
@@ -352,6 +405,8 @@ export default function HomePage() {
           file={file}
           onFileSelect={setFile}
           onFileRemove={() => setFile(null)}
+          rawText={rawText}
+          onTextSelect={setRawText}
           onNext={startEvaluation}
           onBack={goToConfigure}
           onToast={(msg, type) => addToast(msg, type)}
