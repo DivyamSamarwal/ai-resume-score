@@ -1,5 +1,7 @@
 # Base100 - AI Resume Evaluator 💯
 
+**[Try the Live Demo!](https://base100-resume.vercel.app/)**
+
 Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-point calibrated evaluation of software engineering resumes. Inspired by the concepts behind [interviewstreet/hiring-agent](https://github.com/interviewstreet/hiring-agent), Base100 goes further by offering a stunning neo-brutalist UI, multi-LLM support, automatic GitHub analysis, and dynamic Job Description matching.
 
 ![Base100 Dashboard Preview](https://via.placeholder.com/800x450.png?text=Base100+Dashboard)
@@ -57,13 +59,14 @@ Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-
 
 ## 🚢 Deployment
 
-Base100 is designed to be effortlessly deployed on **Vercel**. 
+Base100 is designed to be effortlessly deployed on **Vercel** with absolutely **zero configuration required**. 
 
-Since all API keys are inputted dynamically by the user on the client side, there is **no need to configure complex environment variables**. 
+Since the application requires users to securely input their own API keys on the configuration screen, there are no `.env` files, secrets, or server-side variables you need to configure to host it.
 
-1. Push your code to GitHub.
-2. Import the repository into [Vercel](https://vercel.com).
-3. Click **Deploy**.
+1. Fork or push this repository to your GitHub account.
+2. Go to [Vercel.com](https://vercel.com) and click **Add New Project**.
+3. Import your `base100` repository.
+4. Click **Deploy**. Vercel will automatically detect the Next.js framework, build the app, and give you a live URL in under 2 minutes.
 
 ## 🤝 Acknowledgements
 
