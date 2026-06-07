@@ -5,6 +5,7 @@ import ScoreRing from './ScoreRing';
 import PillarBar from './PillarBar';
 import JustificationCard from './JustificationCard';
 import GitHubCard from './GitHubCard';
+import PdfExportButton from './PdfExportButton';
 import './Dashboard.css';
 
 interface DashboardProps {
@@ -25,13 +26,9 @@ export default function Dashboard({ result }: DashboardProps) {
     <div className="dashboard">
       {/* Header */}
       <header className="dashboard__header" style={{ position: 'relative' }}>
-        <button 
-          className="btn btn-secondary btn-sm print-hide" 
-          onClick={() => window.print()}
-          style={{ position: 'absolute', right: 0, top: 0, zIndex: 10 }}
-        >
-          🖨️ Export PDF
-        </button>
+        <div style={{ position: 'absolute', right: 0, top: 0, zIndex: 10 }}>
+          <PdfExportButton result={result} />
+        </div>
         <h1 className="dashboard__title">Evaluation Results</h1>
         <p className="dashboard__subtitle">{result.summary}</p>
         

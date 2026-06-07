@@ -175,29 +175,4 @@
   margin-top: 6px;
 }
 
-/* ── Print Styles ────────────────────────────────────────────── */
-@media print {
-  body {
-    background: white;
-  }
-  .print-hide, .btn, .header-container, .steps, .toast {
-    display: none !important;
-  }
-  .dashboard {
-    animation: none;
-  }
-  .dashboard__grid {
-    display: block;
-  }
-  .card, .insight-card, .summary-card, .score-ring, .justification-card {
-    box-shadow: none !important;
-    border: 1px solid #ccc !important;
-    transform: none !important;
-    page-break-inside: avoid;
-    margin-bottom: 24px;
-  }
-  .pillar-bar__fill {
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-}
+
