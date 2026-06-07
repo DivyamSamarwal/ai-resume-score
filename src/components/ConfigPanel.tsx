@@ -27,7 +27,7 @@ export default function ConfigPanel({ config, onConfigChange, onNext, onMockMode
     [config, onConfigChange]
   );
 
-  const activeKey = config.selectedModel === 'gemini' ? config.geminiKey : config.deepseekKey;
+
   const isKeyValid = 
     config.selectedModel === 'gemini' ? validateApiKey(config.geminiKey, 'gemini') :
     config.selectedModel === 'deepseek' ? validateApiKey(config.deepseekKey, 'deepseek') :

@@ -7,6 +7,7 @@ import { CheckCircle2, XCircle, Circle, Loader2 } from 'lucide-react';
 interface TerminalLoggerProps {
   logs: TerminalLog[];
   onBack?: () => void;
+  onCancel?: () => void;
 }
 
 function StatusIcon({ status }: { status: TerminalLog['status'] }) {
@@ -22,16 +23,27 @@ function StatusIcon({ status }: { status: TerminalLog['status'] }) {
   }
 }
 
-export default function TerminalLogger({ logs, onBack }: TerminalLoggerProps) {
+export default function TerminalLogger({ logs, onBack, onCancel }: TerminalLoggerProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
+  const userScrolledRef = useRef(false);
   const isComplete = logs.length > 0 && logs.every((l) => l.status === 'success' || l.status === 'error');
   const hasError = logs.some((l) => l.status === 'error');
+  const isRunning = !isComplete;
 
+  // Auto-scroll only if user hasn't manually scrolled up
   useEffect(() => {
-    if (bodyRef.current) {
+    if (bodyRef.current && !userScrolledRef.current) {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
     }
   }, [logs]);
+
+  const handleScroll = () => {
+    if (bodyRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = bodyRef.current;
+      // If user scrolled more than 50px from the bottom, stop auto-scrolling
+      userScrolledRef.current = scrollHeight - scrollTop - clientHeight > 50;
+    }
+  };
 
   return (
     <div style={{ animation: 'fadeIn 0.4s ease-out' }}>
@@ -47,7 +59,14 @@ export default function TerminalLogger({ logs, onBack }: TerminalLoggerProps) {
           <div className="terminal-dot terminal-dot-green" />
           <div className="terminal-title">evaluation-pipeline</div>
         </div>
-        <div className="terminal-body" ref={bodyRef}>
+        <div
+          className="terminal-body"
+          ref={bodyRef}
+          role="log"
+          aria-live="polite"
+          aria-label="Evaluation progress"
+          onScroll={handleScroll}
+        >
           {logs.map((log) => (
             <div key={log.id}>
               <div className="terminal-line">
@@ -78,13 +97,18 @@ export default function TerminalLogger({ logs, onBack }: TerminalLoggerProps) {
         </div>
       </div>
 
-      {hasError && (
-        <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: 'var(--space-lg)' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '12px', marginTop: 'var(--space-lg)' }}>
+        {isRunning && onCancel && (
+          <button className="btn btn-danger" onClick={onCancel} style={{ background: 'var(--danger-dim)', color: '#000' }}>
+            ✕ Cancel Evaluation
+          </button>
+        )}
+        {hasError && (
           <button className="btn btn-secondary" onClick={onBack}>
             ← Back to Configuration
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

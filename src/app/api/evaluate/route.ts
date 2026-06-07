@@ -11,6 +11,9 @@ import { z } from 'zod';
 // Generous timeout but under Vercel's 60 s limit
 const LLM_TIMEOUT_MS = 55_000;
 
+// Maximum allowed size for resume text (roughly ~15 pages of text)
+const MAX_RESUME_LENGTH = 50_000;
+
 // ── Request body shape ──────────────────────────────────────
 interface EvaluateBody {
   resumeText: string;
@@ -87,7 +90,7 @@ async function callGemini(
   maxRetries = 2
 ): Promise<string> {
   // Use current working model
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     const controller = new AbortController();
@@ -96,7 +99,10 @@ async function callGemini(
     try {
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
         }),
@@ -350,6 +356,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (resumeText.length > MAX_RESUME_LENGTH) {
+      return NextResponse.json(
+        { error: `Resume text is too long (${resumeText.length} chars). Maximum allowed is ${MAX_RESUME_LENGTH} characters.` },
+        { status: 413 },
+      );
+    }
+
     if (!['gemini', 'deepseek', 'groq', 'openrouter'].includes(model)) {
       return NextResponse.json(
         { error: 'Invalid "model" field. Must be "gemini", "deepseek", "groq", or "openrouter".' },
@@ -399,7 +412,6 @@ export async function POST(request: NextRequest) {
         {
           error:
             'The AI returned a malformed response. Please try again — the model occasionally produces invalid JSON.',
-          rawResponse: rawText.slice(0, 1000),
         },
         { status: 502 },
       );
@@ -424,8 +436,6 @@ export async function POST(request: NextRequest) {
         {
           error:
             'The AI response is missing required fields or has incorrect types. Please try again.',
-          rawResponse: JSON.stringify(parsed).slice(0, 1000),
-          details: validationError instanceof z.ZodError ? validationError.issues : String(validationError),
         },
         { status: 502 },
       );

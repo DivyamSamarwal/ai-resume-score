@@ -18,7 +18,11 @@ export default function HistorySidebar({ history, onSelect, onClear }: HistorySi
           <Clock size={18} /> Recent Evaluations
         </h3>
         <button 
-          onClick={onClear}
+          onClick={() => {
+            if (window.confirm('Are you sure you want to clear your evaluation history?')) {
+              onClear();
+            }
+          }}
           style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem' }}
         >
           <Trash2 size={14} /> Clear

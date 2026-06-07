@@ -41,9 +41,33 @@ export function getHistory(): HistoryItem[] {
 
   try {
     const historyStr = localStorage.getItem(HISTORY_KEY);
-    return historyStr ? JSON.parse(historyStr) : [];
+    if (!historyStr) return [];
+
+    const parsed = JSON.parse(historyStr);
+
+    // Validate that parsed data is an array of valid HistoryItems
+    if (!Array.isArray(parsed)) {
+      console.warn('History data is not an array, clearing corrupted data.');
+      localStorage.removeItem(HISTORY_KEY);
+      return [];
+    }
+
+    // Filter out any malformed entries
+    return parsed.filter(
+      (item: unknown) =>
+        typeof item === 'object' &&
+        item !== null &&
+        'id' in item &&
+        'timestamp' in item &&
+        'label' in item &&
+        'result' in item &&
+        typeof (item as HistoryItem).result === 'object' &&
+        (item as HistoryItem).result !== null &&
+        'overallScore' in (item as HistoryItem).result
+    );
   } catch (error) {
-    console.error('Failed to load history:', error);
+    console.error('Failed to load history, clearing corrupted data:', error);
+    localStorage.removeItem(HISTORY_KEY);
     return [];
   }
 }

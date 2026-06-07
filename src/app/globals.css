@@ -3,8 +3,6 @@
    Matches resumematcher.fyi aesthetic
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap');
-
 :root {
   /* Neo-Brutalism Colors */
   --bg-dark: #f8f9fa; /* Changed to off-white light mode */
@@ -452,3 +450,118 @@ a {
 }
 .toast-error { background: var(--danger-dim); }
 .toast-success { background: var(--success-dim); }
+
+/* ─── Focus Visible (Accessibility) ──────────────────────── */
+:focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 2px;
+  box-shadow: 4px 4px 0 0 var(--shadow-color), 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+/* ─── Prefers Reduced Motion ─────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Mobile Responsiveness ──────────────────────────────── */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 0 var(--space-md);
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .section-description {
+    font-size: 16px;
+  }
+
+  .header {
+    margin-bottom: 24px;
+  }
+
+  .header-title {
+    font-size: 20px;
+  }
+
+  .header-badge {
+    display: none;
+  }
+
+  .steps {
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .step {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .step-connector {
+    width: 16px;
+  }
+
+  .btn {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .btn-lg {
+    padding: 14px 24px;
+    font-size: 16px;
+  }
+
+  .card {
+    padding: var(--space-md);
+    box-shadow: 4px 4px 0 0 var(--shadow-color);
+  }
+
+  .toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    min-width: 0;
+  }
+
+  .toast {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .privacy-notice {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .terminal-body {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-container {
+    padding: 0 var(--space-sm);
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .header-subtitle {
+    display: none;
+  }
+}
+

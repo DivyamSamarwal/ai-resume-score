@@ -159,7 +159,7 @@ export default function HomePage() {
         const parseLogId = 'file-parse';
 
         if (isImage) {
-          addLog(parseLogId, 'Initializing Optical Character Recognition (OCR)...');
+          addLog(parseLogId, 'Downloading OCR Engine (~15MB, one-time) and parsing image...');
           try {
             const Tesseract = (await import('tesseract.js')).default;
             const { data: { text } } = await Tesseract.recognize(file, 'eng');
@@ -353,7 +353,7 @@ export default function HomePage() {
       const message = err instanceof Error ? err.message : 'An unexpected error occurred';
       addToast(message, 'error');
     }
-  }, [file, config, addLog, updateLog, addToast]);
+  }, [file, rawText, config, addLog, updateLog, addToast]);
 
   // ─── Navigation ───────────────────────────────────────────
   const goToUpload = useCallback(() => setStep('upload'), []);
@@ -414,7 +414,7 @@ export default function HomePage() {
       )}
 
       {step === 'evaluating' && (
-        <TerminalLogger logs={logs} onBack={goToConfigure} />
+        <TerminalLogger logs={logs} onBack={goToConfigure} onCancel={goToConfigure} />
       )}
 
       {step === 'results' && result && (

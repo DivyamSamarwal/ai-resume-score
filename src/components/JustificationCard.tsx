@@ -98,7 +98,7 @@ export default function JustificationCard({ pillar }: JustificationCardProps) {
                   </span>
                   <span>
                     <span className="justification-card__points">
-                      -{deduction.points} pts:
+                      -{Math.abs(deduction.points)} pts:
                     </span>{' '}
                     {deduction.reason}
                   </span>

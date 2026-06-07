@@ -20,12 +20,16 @@ function SingleToast({ toast, onDismiss }: { toast: ToastNotification; onDismiss
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
+    let exitTimer: NodeJS.Timeout;
     const duration = toast.duration || 5000;
     const timer = setTimeout(() => {
       setExiting(true);
-      setTimeout(() => onDismiss(toast.id), 200);
+      exitTimer = setTimeout(() => onDismiss(toast.id), 200);
     }, duration);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      if (exitTimer) clearTimeout(exitTimer);
+    };
   }, [toast.id, toast.duration, onDismiss]);
 
   return (
@@ -50,7 +54,7 @@ export default function Toast({ toasts, onDismiss }: ToastProps) {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="toast-container">
+    <div className="toast-container" role="alert" aria-live="assertive">
       {toasts.map((toast) => (
         <SingleToast key={toast.id} toast={toast} onDismiss={onDismiss} />
       ))}

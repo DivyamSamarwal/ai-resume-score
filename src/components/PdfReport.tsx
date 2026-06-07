@@ -5,9 +5,6 @@ import {
   Text,
   View,
   StyleSheet,
-  Svg,
-  Circle,
-  Path,
 } from '@react-pdf/renderer';
 import type { EvaluationResult, PillarScore } from '@/types';
 

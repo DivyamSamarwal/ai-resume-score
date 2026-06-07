@@ -109,12 +109,6 @@ export default function Dashboard({ result }: DashboardProps) {
 
         {/* ── Right Column ─────────────────────────────────────── */}
         <div className="dashboard__column">
-          {/* Summary Card */}
-          <div className="summary-card">
-            <h3 className="summary-card__title">📋 Summary</h3>
-            <p className="summary-card__text">{result.summary}</p>
-          </div>
-
           {/* Justification Cards */}
           {pillars.map((pillar, i) => (
             <JustificationCard
