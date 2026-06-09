@@ -12,7 +12,7 @@ import TerminalLogger from '@/components/TerminalLogger';
 import Dashboard from '@/components/Dashboard';
 import Toast from '@/components/Toast';
 import HistorySidebar from '@/components/HistorySidebar';
-import { saveToHistory, getHistory, clearHistory, HistoryItem } from '@/lib/storage';
+import { saveToHistory, getHistory, clearHistory, updateHistoryDbId, HistoryItem } from '@/lib/storage';
 
 /** Step indicator with connector lines */
 function StepIndicator({ currentStep }: { currentStep: AppStep }) {
@@ -343,7 +343,7 @@ export default function HomePage() {
       setResult(evalData);
 
       const historyLabel = targetUsername ? `@${targetUsername}` : `Evaluation on ${new Date().toLocaleDateString()}`;
-      saveToHistory(historyLabel, evalData);
+      const localId = saveToHistory(historyLabel, evalData);
       setHistory(getHistory());
 
       // Attempt to save to Supabase in the background
@@ -354,7 +354,11 @@ export default function HomePage() {
       })
         .then((res) => res.json())
         .then((data) => {
-          if (data.id) setDbId(data.id);
+          if (data.id) {
+            setDbId(data.id);
+            if (localId) updateHistoryDbId(localId, data.id);
+            setHistory(getHistory());
+          }
         })
         .catch(console.error);
 
@@ -404,6 +408,26 @@ export default function HomePage() {
             history={history} 
             onSelect={(item) => {
               setResult(item.result);
+              if (item.dbId) {
+                setDbId(item.dbId);
+              } else {
+                setDbId(null);
+                // Auto-upload old/unsynced evaluations when viewed so they can be shared
+                fetch('/api/evaluations', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ label: item.label, result: item.result }),
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    if (data.id) {
+                      setDbId(data.id);
+                      updateHistoryDbId(item.id, data.id);
+                      setHistory(getHistory());
+                    }
+                  })
+                  .catch(console.error);
+              }
               setStep('results');
             }} 
             onClear={() => {

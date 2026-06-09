@@ -8,17 +8,19 @@ export interface HistoryItem {
   timestamp: number;
   label: string; // e.g., "@octocat" or "Evaluation - [Date]"
   result: EvaluationResult;
+  dbId?: string;
 }
 
-export function saveToHistory(label: string, result: EvaluationResult): void {
-  if (typeof window === 'undefined') return;
+export function saveToHistory(label: string, result: EvaluationResult): string | null {
+  if (typeof window === 'undefined') return null;
 
   try {
     const historyStr = localStorage.getItem(HISTORY_KEY);
     let history: HistoryItem[] = historyStr ? JSON.parse(historyStr) : [];
 
+    const newId = crypto.randomUUID();
     const newItem: HistoryItem = {
-      id: crypto.randomUUID(),
+      id: newId,
       timestamp: Date.now(),
       label,
       result,
@@ -31,8 +33,26 @@ export function saveToHistory(label: string, result: EvaluationResult): void {
     }
 
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    return newId;
   } catch (error) {
     console.error('Failed to save evaluation to history:', error);
+    return null;
+  }
+}
+
+export function updateHistoryDbId(localId: string, dbId: string): void {
+  if (typeof window === 'undefined') return;
+
+  try {
+    const historyStr = localStorage.getItem(HISTORY_KEY);
+    if (!historyStr) return;
+
+    let history: HistoryItem[] = JSON.parse(historyStr);
+    history = history.map((item) => (item.id === localId ? { ...item, dbId } : item));
+
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  } catch (error) {
+    console.error('Failed to update history dbId:', error);
   }
 }
 
