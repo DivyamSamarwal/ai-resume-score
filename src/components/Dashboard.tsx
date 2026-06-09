@@ -6,15 +6,18 @@ import PillarBar from './PillarBar';
 import JustificationCard from './JustificationCard';
 import GitHubCard from './GitHubCard';
 import PdfExportButton from './PdfExportButton';
+import { Copy, Check } from 'lucide-react';
 import './Dashboard.css';
 
 interface DashboardProps {
   result: EvaluationResult;
+  dbId?: string | null;
 }
 
 const PILLAR_DELAYS = [0, 0.2, 0.4, 0.6];
 
-export default function Dashboard({ result }: DashboardProps) {
+export default function Dashboard({ result, dbId }: DashboardProps) {
+  const [copied, setCopied] = useState(false);
   const pillars: PillarScore[] = [
     result.pillars.openSource,
     result.pillars.selfMadeProjects,
@@ -26,9 +29,6 @@ export default function Dashboard({ result }: DashboardProps) {
     <div className="dashboard">
       {/* Header */}
       <header className="dashboard__header" style={{ position: 'relative' }}>
-        <div style={{ position: 'absolute', right: 0, top: 0, zIndex: 10 }}>
-          <PdfExportButton result={result} />
-        </div>
         <h1 className="dashboard__title">Evaluation Results</h1>
         <p className="dashboard__subtitle">{result.summary}</p>
         
@@ -41,6 +41,25 @@ export default function Dashboard({ result }: DashboardProps) {
       <div className="dashboard__grid">
         {/* ── Left Column ──────────────────────────────────────── */}
         <div className="dashboard__column">
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '24px' }}>
+            <PdfExportButton result={result} />
+            {dbId && (
+              <button
+                className="btn btn-secondary btn-sm"
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/report/${dbId}`);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+              >
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+                {copied ? 'Copied!' : 'Share Link'}
+              </button>
+            )}
+          </div>
+
           {/* Score Ring */}
           <div style={{ display: 'flex', justifyContent: 'center', padding: '16px 0' }}>
             <ScoreRing score={result.overallScore} />

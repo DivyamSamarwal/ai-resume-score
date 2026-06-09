@@ -69,6 +69,7 @@ export default function HomePage() {
   const [rawText, setRawText] = useState<string | null>(null);
   const [logs, setLogs] = useState<TerminalLog[]>([]);
   const [result, setResult] = useState<EvaluationResult | null>(null);
+  const [dbId, setDbId] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
   const abortRef = useRef<AbortController | null>(null);
@@ -345,6 +346,18 @@ export default function HomePage() {
       saveToHistory(historyLabel, evalData);
       setHistory(getHistory());
 
+      // Attempt to save to Supabase in the background
+      fetch('/api/evaluations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label: historyLabel, result: evalData }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.id) setDbId(data.id);
+        })
+        .catch(console.error);
+
       await new Promise((res) => setTimeout(res, 600));
       setStep('results');
       addToast(`Evaluation complete: ${evalData.overallScore}/100`, 'success');
@@ -371,6 +384,7 @@ export default function HomePage() {
     setRawText(null);
     setLogs([]);
     setResult(null);
+    setDbId(null);
   }, []);
 
   return (
@@ -434,7 +448,7 @@ export default function HomePage() {
               ← Start Over
             </button>
           </div>
-          <Dashboard result={result} />
+          <Dashboard result={result} dbId={dbId} />
           <div style={{ height: 'var(--space-3xl)' }} />
         </div>
       )}

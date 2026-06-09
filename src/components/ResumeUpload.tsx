@@ -46,7 +46,7 @@ export default function ResumeUpload({
         return;
       }
       if (f.size > MAX_FILE_SIZE) {
-        onToast(`File size (${formatFileSize(f.size)}) exceeds the 4MB limit.`, 'error');
+        onToast(`File size (${formatFileSize(f.size)}) exceeds the 2MB limit.`, 'error');
         return;
       }
       if (f.size === 0) {
@@ -201,7 +201,7 @@ export default function ResumeUpload({
                 <Upload size={32} style={{ margin: '0 auto' }} />
                 <span>Select PDF, DOCX, or Image Resume</span>
                 <span style={{ fontSize: '14px', fontWeight: 500, fontFamily: 'var(--font-mono)' }}>
-                  Max 4MB
+                  Max 2MB
                 </span>
               </label>
               <input
@@ -245,7 +245,7 @@ export default function ResumeUpload({
             </div>
           )}
 
-          {file && file.size > 3 * 1024 * 1024 && (
+          {file && file.size > 1.5 * 1024 * 1024 && (
             <div
               style={{
                 display: 'flex',

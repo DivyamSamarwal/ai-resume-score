@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as mammoth from 'mammoth';
 import type { ParsePdfResponse } from '@/types';
 
-const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB limit
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB limit
 
 export async function POST(request: NextRequest) {
   try {
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     if (file.size > MAX_FILE_SIZE) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
       return NextResponse.json(
-        { error: `File too large (${sizeMB} MB). Maximum allowed size is 4 MB.` },
+        { error: `File too large (${sizeMB} MB). Maximum allowed size is 2 MB.` },
         { status: 413 },
       );
     }

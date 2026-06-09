@@ -10,7 +10,7 @@ import type { ParsePdfResponse } from '@/types';
 // unpdf relies on Node.js APIs (Buffer, fs internals) — cannot run on Edge
 export const runtime = 'nodejs';
 
-const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB (under Vercel's 4.5 MB limit)
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB limit
 
 export async function POST(request: NextRequest) {
   try {
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
       return NextResponse.json(
         {
-          error: `File too large (${sizeMB} MB). Maximum allowed size is 4 MB.`,
+          error: `File too large (${sizeMB} MB). Maximum allowed size is 2 MB.`,
         },
         { status: 413 },
       );

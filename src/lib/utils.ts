@@ -87,7 +87,7 @@ export function timeAgo(dateStr: string): string {
 }
 
 /** Max file size in bytes (4MB — under Vercel's 4.5MB limit) */
-export const MAX_FILE_SIZE = 4 * 1024 * 1024;
+export const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
 /** Vercel free tier serverless function timeout (ms) */
 export const SERVERLESS_TIMEOUT = 55_000;
