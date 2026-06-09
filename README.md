@@ -36,6 +36,7 @@ Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-
 - **Deep GitHub Integration**: Automatically detects GitHub usernames from the resume and securely fetches the candidate's real repository data, commit history, and top languages to factor into the final score.
 - **Dynamic Job Description Matching**: Paste a specific Job Description to instantly tailor the AI's scoring rubric. The AI will heavily scrutinize the candidate against the exact requirements of the role.
 - **Local History & PDF Export**: Your evaluations are securely saved to your browser's local `localStorage`. Generate a clean, professional PDF report of the evaluation dashboard with a single click.
+- **Shareable Public Links**: Optionally connect a Supabase PostgreSQL database to automatically generate unique, shareable public URLs for your evaluations so you can easily send them to hiring managers. Reports securely auto-expire after 30 days.
 - **Privacy First**: API keys and resumes are processed entirely client-side or securely routed through edge functions. Nothing is logged or stored on our databases.
 
 ---
@@ -68,6 +69,7 @@ Instead of vague feedback, Base100 forces the AI to objectively score the candid
 | **Styling** | Vanilla CSS (Custom Neo-Brutalist Design System) |
 | **Document Parsing** | `unpdf` (PDF), `mammoth` (DOCX), `tesseract.js` (Image OCR) |
 | **Validation** | `zod` |
+| **Database (Optional)** | [Supabase](https://supabase.com/) (PostgreSQL + `pg_cron`) |
 | **Icons** | `lucide-react` |
 
 ---
@@ -106,12 +108,14 @@ Instead of vague feedback, Base100 forces the AI to objectively score the candid
 
 Base100 is designed to be effortlessly deployed on **Vercel** with absolutely **zero configuration required**. 
 
-Because the application requires users to securely input their own API keys on the configuration screen, there are no `.env` files, secrets, or server-side variables you need to configure to host it.
+Because the application requires users to securely input their own API keys on the configuration screen, you can deploy it instantly with zero configuration. However, if you want the **Shareable Public Links** feature to work, you must add your Supabase database keys.
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDivyamSamarwal%2Fai-resume-score)
 
 1. Click the Deploy button above, or fork the repository.
-2. Import the project into Vercel.
+2. *(Optional)* Add your Supabase keys as Environment Variables in Vercel to enable URL sharing:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
 3. Click **Deploy**. Vercel will automatically detect Next.js and build the app in under 2 minutes.
 
 ---
