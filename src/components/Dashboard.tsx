@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useState } from 'react';
 import type { EvaluationResult, PillarScore } from '@/types';
 import ScoreRing from './ScoreRing';
 import PillarBar from './PillarBar';
