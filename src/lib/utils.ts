@@ -44,7 +44,7 @@ export function cn(...classes: (string | false | undefined | null)[]): string {
 /**
  * Basic API key format validation (non-empty, reasonable length).
  */
-export function validateApiKey(key: string, provider: 'gemini' | 'deepseek' | 'github' | 'groq' | 'openrouter'): boolean {
+export function validateApiKey(key: string, provider: 'gemini' | 'deepseek' | 'github' | 'groq' | 'openrouter' | 'openai' | 'anthropic'): boolean {
   const trimmed = key.trim();
   if (!trimmed) return false;
   switch (provider) {
@@ -56,6 +56,10 @@ export function validateApiKey(key: string, provider: 'gemini' | 'deepseek' | 'g
       return trimmed.startsWith('gsk_') && trimmed.length >= 20;
     case 'openrouter':
       return trimmed.startsWith('sk-or-v1-') && trimmed.length >= 20;
+    case 'openai':
+      return trimmed.startsWith('sk-') && trimmed.length >= 20;
+    case 'anthropic':
+      return trimmed.startsWith('sk-ant-') && trimmed.length >= 20;
     case 'github':
       return (trimmed.startsWith('ghp_') || trimmed.startsWith('github_pat_')) && trimmed.length >= 20;
     default:

@@ -19,7 +19,7 @@ interface EvaluateBody {
   resumeText: string;
   githubData: string | null;
   jobDescription?: string;
-  model: 'gemini' | 'deepseek' | 'groq' | 'openrouter';
+  model: 'gemini' | 'deepseek' | 'groq' | 'openrouter' | 'openai' | 'anthropic';
 }
 
 // ── Gemini response shape ───────────────────────────────────
@@ -315,6 +315,94 @@ async function callOpenRouter(
   }
 }
 
+/** Call the OpenAI API (GPT-4o) */
+async function callOpenAI(
+  apiKey: string,
+  prompt: string,
+): Promise<string> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.3,
+        }),
+        signal: controller.signal,
+      },
+    );
+
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => '');
+      if (response.status === 401 || response.status === 403) throw new LLMError('Invalid or unauthorized OpenAI API key.', response.status);
+      if (response.status === 429) throw new LLMError('OpenAI rate limit exceeded.', 429);
+      throw new LLMError(`OpenAI API error (${response.status}): ${errorBody.slice(0, 200)}`, response.status);
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content;
+    if (!text) throw new LLMError('OpenAI returned an empty response.', 502);
+
+    return text;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+/** Call the Anthropic API (Claude 3.5 Sonnet) */
+async function callAnthropic(
+  apiKey: string,
+  prompt: string,
+): Promise<string> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), LLM_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(
+      'https://api.anthropic.com/v1/messages',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-3-5-sonnet-latest',
+          max_tokens: 4096,
+          messages: [{ role: 'user', content: prompt }],
+          temperature: 0.3,
+        }),
+        signal: controller.signal,
+      },
+    );
+
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => '');
+      if (response.status === 401 || response.status === 403) throw new LLMError('Invalid or unauthorized Anthropic API key.', response.status);
+      if (response.status === 429) throw new LLMError('Anthropic rate limit exceeded.', 429);
+      throw new LLMError(`Anthropic API error (${response.status}): ${errorBody.slice(0, 200)}`, response.status);
+    }
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text;
+    if (!text) throw new LLMError('Anthropic returned an empty response.', 502);
+
+    return text;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 class LLMError extends Error {
   constructor(
     message: string,
@@ -363,9 +451,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!['gemini', 'deepseek', 'groq', 'openrouter'].includes(model)) {
+    if (!['gemini', 'deepseek', 'groq', 'openrouter', 'openai', 'anthropic'].includes(model)) {
       return NextResponse.json(
-        { error: 'Invalid "model" field. Must be "gemini", "deepseek", "groq", or "openrouter".' },
+        { error: 'Invalid "model" field. Must be a supported model type.' },
         { status: 400 },
       );
     }
@@ -380,6 +468,8 @@ export async function POST(request: NextRequest) {
         model === 'gemini' ? await callGemini(apiKey.trim(), prompt) :
         model === 'deepseek' ? await callDeepSeek(apiKey.trim(), prompt) :
         model === 'groq' ? await callGroq(apiKey.trim(), prompt) :
+        model === 'openai' ? await callOpenAI(apiKey.trim(), prompt) :
+        model === 'anthropic' ? await callAnthropic(apiKey.trim(), prompt) :
         await callOpenRouter(apiKey.trim(), prompt);
     } catch (err) {
       if (err instanceof LLMError) {

@@ -12,6 +12,7 @@ import TerminalLogger from '@/components/TerminalLogger';
 import Dashboard from '@/components/Dashboard';
 import Toast from '@/components/Toast';
 import HistorySidebar from '@/components/HistorySidebar';
+import CompareModal from '@/components/CompareModal';
 import { saveToHistory, getHistory, clearHistory, updateHistoryDbId, HistoryItem } from '@/lib/storage';
 
 /** Step indicator with connector lines */
@@ -61,6 +62,8 @@ export default function HomePage() {
     deepseekKey: '',
     groqKey: '',
     openrouterKey: '',
+    openaiKey: '',
+    anthropicKey: '',
     githubToken: '',
     githubUsername: '',
     selectedModel: 'gemini',
@@ -72,6 +75,8 @@ export default function HomePage() {
   const [dbId, setDbId] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [toasts, setToasts] = useState<ToastNotification[]>([]);
+  const [compareItems, setCompareItems] = useState<[HistoryItem, HistoryItem] | null>(null);
+  const [pendingCompare, setPendingCompare] = useState<HistoryItem | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   React.useEffect(() => {
@@ -287,6 +292,8 @@ export default function HomePage() {
         config.selectedModel === 'gemini' ? config.geminiKey : 
         config.selectedModel === 'deepseek' ? config.deepseekKey :
         config.selectedModel === 'groq' ? config.groqKey :
+        config.selectedModel === 'openai' ? config.openaiKey :
+        config.selectedModel === 'anthropic' ? config.anthropicKey :
         config.openrouterKey;
       const evalRes = await fetch('/api/evaluate', {
         method: 'POST',
@@ -314,9 +321,11 @@ export default function HomePage() {
       
       const modelName = 
         config.selectedModel === 'gemini' ? 'Gemini 2.0 Flash' : 
+        config.selectedModel === 'openai' ? 'OpenAI GPT-4o' :
+        config.selectedModel === 'anthropic' ? 'Anthropic Claude 3.5' :
         config.selectedModel === 'deepseek' ? 'DeepSeek Chat' :
         config.selectedModel === 'groq' ? 'Groq LLaMA-3 70B' :
-        'OpenRouter (Claude 3.5)';
+        'OpenRouter';
 
       updateLog(
         evalLogId,
@@ -343,6 +352,8 @@ export default function HomePage() {
       setResult(evalData);
 
       const historyLabel = targetUsername ? `@${targetUsername}` : `Evaluation on ${new Date().toLocaleDateString()}`;
+      // Stamp which model produced this result
+      evalData.model = config.selectedModel;
       const localId = saveToHistory(historyLabel, evalData);
       setHistory(getHistory());
 
@@ -391,6 +402,14 @@ export default function HomePage() {
     setDbId(null);
   }, []);
 
+  // Re-evaluate: keep file/text, jump straight to upload step to re-run
+  const reEvaluate = useCallback(() => {
+    setResult(null);
+    setDbId(null);
+    setLogs([]);
+    setStep('upload');
+  }, []);
+
   return (
     <div className="app-container">
       <Header />
@@ -429,7 +448,17 @@ export default function HomePage() {
                   .catch(console.error);
               }
               setStep('results');
-            }} 
+            }}
+            onCompare={(item) => {
+              if (pendingCompare && pendingCompare.id !== item.id) {
+                setCompareItems([pendingCompare, item]);
+                setPendingCompare(null);
+              } else {
+                setPendingCompare(item);
+                addToast(`"${item.label}" selected. Now pick a second evaluation to compare.`, 'info', 4000);
+              }
+            }}
+            pendingCompareId={pendingCompare?.id ?? null}
             onClear={() => {
               clearHistory();
               setHistory([]);
@@ -463,18 +492,33 @@ export default function HomePage() {
               justifyContent: 'space-between',
               alignItems: 'center',
               marginBottom: 'var(--space-lg)',
+              flexWrap: 'wrap',
+              gap: '8px',
             }}
           >
             <h2 className="section-title" style={{ marginBottom: 0 }}>
               Evaluation Results
             </h2>
-            <button className="btn btn-secondary btn-sm" onClick={resetAll}>
-              ← Start Over
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button className="btn btn-secondary btn-sm" onClick={reEvaluate}>
+                ⟳ Re-evaluate
+              </button>
+              <button className="btn btn-secondary btn-sm" onClick={resetAll}>
+                ← Start Over
+              </button>
+            </div>
           </div>
           <Dashboard result={result} dbId={dbId} />
           <div style={{ height: 'var(--space-3xl)' }} />
         </div>
+      )}
+
+      {compareItems && (
+        <CompareModal
+          itemA={compareItems[0]}
+          itemB={compareItems[1]}
+          onClose={() => setCompareItems(null)}
+        />
       )}
 
       <Toast toasts={toasts} onDismiss={dismissToast} />

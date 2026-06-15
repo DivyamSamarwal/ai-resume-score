@@ -52,6 +52,7 @@ export interface EvaluationResult {
   summary: string;
   strengths: string[];
   improvements: string[];
+  model?: string; // e.g. 'gemini', 'openai' — stored at evaluation time
 }
 
 /** Terminal log entry status */
@@ -72,10 +73,12 @@ export interface ApiConfig {
   deepseekKey: string;
   groqKey: string;
   openrouterKey: string;
+  openaiKey: string;
+  anthropicKey: string;
   githubToken: string;
   githubUsername: string;
   jobDescription?: string;
-  selectedModel: 'gemini' | 'deepseek' | 'groq' | 'openrouter';
+  selectedModel: 'gemini' | 'deepseek' | 'groq' | 'openrouter' | 'openai' | 'anthropic';
 }
 
 /** Application step state machine */

@@ -26,15 +26,42 @@ export default function Dashboard({ result, dbId }: DashboardProps) {
     result.pillars.technicalSkills,
   ];
 
+  const MODEL_INFO: Record<string, { label: string; color: string }> = {
+    gemini:     { label: 'Gemini 2.0 Flash', color: '#4285F4' },
+    openai:     { label: 'GPT-4o',           color: '#10a37f' },
+    anthropic:  { label: 'Claude 3.5 Sonnet',color: '#c27830' },
+    deepseek:   { label: 'DeepSeek Chat',    color: '#7c3aed' },
+    groq:       { label: 'Groq LLaMA-3',     color: '#f59e0b' },
+    openrouter: { label: 'OpenRouter',        color: '#6b7280' },
+  };
+  const modelInfo = result.model ? MODEL_INFO[result.model] : null;
+
   return (
     <div className="dashboard">
       {/* Header */}
       <header className="dashboard__header" style={{ position: 'relative' }}>
-        <h1 className="dashboard__title">Evaluation Results</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', marginBottom: '8px' }}>
+          <h1 className="dashboard__title" style={{ marginBottom: 0 }}>Evaluation Results</h1>
+          {modelInfo && (
+            <span style={{
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              padding: '3px 10px',
+              border: `2px solid ${modelInfo.color}`,
+              borderRadius: '2px',
+              color: modelInfo.color,
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+              whiteSpace: 'nowrap',
+            }}>
+              ✦ {modelInfo.label}
+            </span>
+          )}
+        </div>
         <p className="dashboard__subtitle">{result.summary}</p>
         
         <div style={{ marginTop: 'var(--space-md)', padding: 'var(--space-sm)', backgroundColor: 'var(--bg-secondary)', borderLeft: '4px solid #fff', fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'inline-block' }}>
-          <strong>Note:</strong> Since evaluations are generated dynamically by AI, your score and deductions may vary slightly depending on which model you choose to use (e.g., DeepSeek vs Gemini vs Groq).
+          <strong>Note:</strong> Since evaluations are generated dynamically by AI, your score and deductions may vary slightly depending on which model you choose to use (e.g., OpenAI vs Anthropic vs Gemini).
         </div>
       </header>
 

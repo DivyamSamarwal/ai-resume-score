@@ -32,6 +32,8 @@ export default function ConfigPanel({ config, onConfigChange, onNext, onMockMode
     config.selectedModel === 'gemini' ? validateApiKey(config.geminiKey, 'gemini') :
     config.selectedModel === 'deepseek' ? validateApiKey(config.deepseekKey, 'deepseek') :
     config.selectedModel === 'groq' ? validateApiKey(config.groqKey, 'groq') :
+    config.selectedModel === 'openai' ? validateApiKey(config.openaiKey, 'openai') :
+    config.selectedModel === 'anthropic' ? validateApiKey(config.anthropicKey, 'anthropic') :
     validateApiKey(config.openrouterKey, 'openrouter');
     
   const isGithubValid = !config.githubToken || validateApiKey(config.githubToken, 'github');
@@ -58,23 +60,38 @@ export default function ConfigPanel({ config, onConfigChange, onNext, onMockMode
         {/* Model Selector */}
         <div className="input-group">
           <label className="input-label">AI Model</label>
-          <div className="model-toggle" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', borderRight: 'none', borderBottom: 'none' }}>
+          <div className="model-toggle" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderRight: 'none', borderBottom: 'none' }}>
             <button
               className={`model-toggle-option ${config.selectedModel === 'gemini' ? 'active' : ''}`}
-              style={{ borderBottom: '3px solid #000' }}
+              style={{ borderBottom: '3px solid #000', borderRight: '3px solid #000' }}
               onClick={() => updateField('selectedModel', 'gemini')}
             >
               Gemini
             </button>
             <button
-              className={`model-toggle-option ${config.selectedModel === 'deepseek' ? 'active' : ''}`}
+              className={`model-toggle-option ${config.selectedModel === 'openai' ? 'active' : ''}`}
+              style={{ borderBottom: '3px solid #000', borderRight: '3px solid #000' }}
+              onClick={() => updateField('selectedModel', 'openai')}
+            >
+              OpenAI
+            </button>
+            <button
+              className={`model-toggle-option ${config.selectedModel === 'anthropic' ? 'active' : ''}`}
               style={{ borderBottom: '3px solid #000' }}
+              onClick={() => updateField('selectedModel', 'anthropic')}
+            >
+              Anthropic
+            </button>
+            <button
+              className={`model-toggle-option ${config.selectedModel === 'deepseek' ? 'active' : ''}`}
+              style={{ borderRight: '3px solid #000' }}
               onClick={() => updateField('selectedModel', 'deepseek')}
             >
               DeepSeek
             </button>
             <button
               className={`model-toggle-option ${config.selectedModel === 'groq' ? 'active' : ''}`}
+              style={{ borderRight: '3px solid #000' }}
               onClick={() => updateField('selectedModel', 'groq')}
             >
               Groq LLaMA-3
@@ -182,6 +199,74 @@ export default function ConfigPanel({ config, onConfigChange, onNext, onMockMode
                 {showKeys.groq ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+          </div>
+        )}
+
+        {/* OpenAI Key */}
+        {config.selectedModel === 'openai' && (
+          <div className="input-group">
+            <label className="input-label">
+              <Key size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+              OpenAI API Key
+            </label>
+            <div className="input-wrapper">
+              <input
+                type={showKeys.openai ? 'text' : 'password'}
+                className={`input-field ${validateApiKey(config.openaiKey, 'openai') ? 'input-field-valid' : ''}`}
+                placeholder="sk-proj-..."
+                value={config.openaiKey}
+                onChange={(e) => updateField('openaiKey', e.target.value)}
+                autoComplete="off"
+              />
+              <button
+                className="input-icon"
+                onClick={() => toggleShow('openai')}
+                aria-label="Toggle key visibility"
+                type="button"
+                style={{ background: 'none', border: 'none' }}
+              >
+                {showKeys.openai ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {validateApiKey(config.openaiKey, 'openai') && (
+              <span style={{ fontSize: 12, color: 'var(--success)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <CheckCircle2 size={12} /> Key format looks valid
+              </span>
+            )}
+          </div>
+        )}
+
+        {/* Anthropic Key */}
+        {config.selectedModel === 'anthropic' && (
+          <div className="input-group">
+            <label className="input-label">
+              <Key size={12} style={{ display: 'inline', marginRight: 4, verticalAlign: 'middle' }} />
+              Anthropic API Key
+            </label>
+            <div className="input-wrapper">
+              <input
+                type={showKeys.anthropic ? 'text' : 'password'}
+                className={`input-field ${validateApiKey(config.anthropicKey, 'anthropic') ? 'input-field-valid' : ''}`}
+                placeholder="sk-ant-..."
+                value={config.anthropicKey}
+                onChange={(e) => updateField('anthropicKey', e.target.value)}
+                autoComplete="off"
+              />
+              <button
+                className="input-icon"
+                onClick={() => toggleShow('anthropic')}
+                aria-label="Toggle key visibility"
+                type="button"
+                style={{ background: 'none', border: 'none' }}
+              >
+                {showKeys.anthropic ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {validateApiKey(config.anthropicKey, 'anthropic') && (
+              <span style={{ fontSize: 12, color: 'var(--success)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <CheckCircle2 size={12} /> Key format looks valid
+              </span>
+            )}
           </div>
         )}
 

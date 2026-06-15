@@ -32,7 +32,7 @@ Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-
 - **Multi-Format Uploads**: Upload standard **PDFs**, native Microsoft Word **DOCX** files, or **Image** files (`.png`, `.jpg`).
 - **Client-Side Image OCR**: Base100 uses `Tesseract.js` directly in your browser to extract text from image screenshots with zero server-side latency or timeout risk.
 - **"Paste Text" Fallback**: Have a stubborn, corrupted PDF? Simply paste the raw text. The app aggressively sanitizes hidden characters and spacing dynamically before processing.
-- **Bring Your Own Model (BYOK)**: Evaluate resumes using **Gemini 2.0 Flash**, **DeepSeek**, **Groq (LLaMA-3)**, or any model via **OpenRouter**.
+- **Bring Your Own Model (BYOK)**: Evaluate resumes using **OpenAI (GPT-4o)**, **Anthropic (Claude 3.5)**, **Gemini 2.0 Flash**, **DeepSeek**, **Groq (LLaMA-3)**, or any model via **OpenRouter**.
 - **Deep GitHub Integration**: Automatically detects GitHub usernames from the resume and securely fetches the candidate's real repository data, commit history, and top languages to factor into the final score.
 - **Dynamic Job Description Matching**: Paste a specific Job Description to instantly tailor the AI's scoring rubric. The AI will heavily scrutinize the candidate against the exact requirements of the role.
 - **Local History & PDF Export**: Your evaluations are securely saved to your browser's local `localStorage`. Generate a clean, professional PDF report of the evaluation dashboard with a single click.
@@ -79,7 +79,7 @@ Instead of vague feedback, Base100 forces the AI to objectively score the candid
 ### Prerequisites
 - Node.js 18+
 - npm, yarn, or pnpm
-- API Keys for the models you wish to use (Gemini, DeepSeek, Groq, etc.)
+- API Keys for the models you wish to use (OpenAI, Anthropic, Gemini, DeepSeek, etc.)
 - *(Optional)* A GitHub Personal Access Token (PAT) to prevent rate limiting.
 
 ### Installation
