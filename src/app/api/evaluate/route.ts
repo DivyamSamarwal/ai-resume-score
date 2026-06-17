@@ -81,6 +81,7 @@ const EvaluationResultSchema = z.object({
   summary: z.string(),
   strengths: z.array(z.string()),
   improvements: z.array(z.string()),
+  unquantifiedBullets: z.array(z.string()).default([]),
 });
 
 /** Call the Gemini API with automatic retries for rate limits */

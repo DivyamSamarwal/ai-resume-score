@@ -52,7 +52,9 @@ export interface EvaluationResult {
   summary: string;
   strengths: string[];
   improvements: string[];
+  unquantifiedBullets: string[];
   model?: string; // e.g. 'gemini', 'openai' — stored at evaluation time
+  resumeText?: string; // Stored to allow client-side NLP analysis
 }
 
 /** Terminal log entry status */

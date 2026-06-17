@@ -352,8 +352,9 @@ export default function HomePage() {
       setResult(evalData);
 
       const historyLabel = targetUsername ? `@${targetUsername}` : `Evaluation on ${new Date().toLocaleDateString()}`;
-      // Stamp which model produced this result
+      // Stamp which model produced this result and save raw text for client-side NLP
       evalData.model = config.selectedModel;
+      evalData.resumeText = pdfData.text;
       const localId = saveToHistory(historyLabel, evalData);
       setHistory(getHistory());
 
@@ -489,16 +490,13 @@ export default function HomePage() {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between',
+              justifyContent: 'flex-end',
               alignItems: 'center',
-              marginBottom: 'var(--space-lg)',
+              marginBottom: 'var(--space-md)',
               flexWrap: 'wrap',
               gap: '8px',
             }}
           >
-            <h2 className="section-title" style={{ marginBottom: 0 }}>
-              Evaluation Results
-            </h2>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button className="btn btn-secondary btn-sm" onClick={reEvaluate}>
                 ⟳ Re-evaluate

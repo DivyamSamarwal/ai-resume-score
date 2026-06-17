@@ -142,6 +142,11 @@ export const mockEvaluationResult: EvaluationResult = {
     'Rewrite DataFlow Inc. bullet points with quantified outcomes: "Implemented X → reduced Y by Z%"',
     'Pursue competitive programming advancement (Expert+ on Codeforces) to strengthen problem-solving evidence',
   ],
+  unquantifiedBullets: [
+    'Responsible for building the user dashboard',
+    'Helped migrate the legacy database to PostgreSQL',
+    'Worked on performance optimization for the web app'
+  ],
 };
 
 export const mockTerminalLogs: TerminalLog[] = [

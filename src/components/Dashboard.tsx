@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import type { EvaluationResult, PillarScore } from '@/types';
 import ScoreRing from './ScoreRing';
 import PillarBar from './PillarBar';
+import ResumeAnalyzerCard from './ResumeAnalyzerCard';
 import JustificationCard from './JustificationCard';
 import GitHubCard from './GitHubCard';
 import PdfExportButton from './PdfExportButton';
@@ -152,6 +153,8 @@ export default function Dashboard({ result, dbId }: DashboardProps) {
               </ul>
             </div>
           )}
+
+          <ResumeAnalyzerCard result={result} />
         </div>
 
         {/* ── Right Column ─────────────────────────────────────── */}

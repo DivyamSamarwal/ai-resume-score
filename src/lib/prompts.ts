@@ -77,6 +77,9 @@ ${safeGithub ? `### GITHUB PROFILE DATA:
 ${safeGithub}
 \`\`\`` : '### GITHUB DATA: Not provided — evaluate based on resume content only. Note this in your assessment.'}
 
+## EXTRACTION TASKS
+Extract up to 5 exact bullet points from the resume that describe experience or projects but COMPLETELY LACK quantifiable metrics (numbers, percentages, scales, money). Output these as strings in the 'unquantifiedBullets' array.
+
 ## OUTPUT FORMAT
 
 You MUST respond with ONLY a valid JSON object (no markdown, no backticks, no explanation outside the JSON). The JSON must match this exact structure:
@@ -117,7 +120,8 @@ You MUST respond with ONLY a valid JSON object (no markdown, no backticks, no ex
   },
   "summary": "<2-3 sentence overall assessment>",
   "strengths": ["<top strength 1>", "<top strength 2>", "<top strength 3>"],
-  "improvements": ["<actionable improvement 1>", "<actionable improvement 2>", "<actionable improvement 3>"]
+  "improvements": ["<actionable improvement 1>", "<actionable improvement 2>", "<actionable improvement 3>"],
+  "unquantifiedBullets": ["<exact resume bullet lacking numbers 1>", "<exact resume bullet lacking numbers 2>"]
 }
 
 CRITICAL RULES:
