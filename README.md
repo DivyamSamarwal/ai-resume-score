@@ -33,6 +33,8 @@ Base100 is a powerful, AI-driven recruitment tool that performs a rigorous, 100-
 - **Client-Side Image OCR**: Base100 uses `Tesseract.js` directly in your browser to extract text from image screenshots with zero server-side latency or timeout risk.
 - **"Paste Text" Fallback**: Have a stubborn, corrupted PDF? Simply paste the raw text. The app aggressively sanitizes hidden characters and spacing dynamically before processing.
 - **Bring Your Own Model (BYOK)**: Evaluate resumes using **OpenAI (GPT-4o)**, **Anthropic (Claude 3.5)**, **Gemini 2.0 Flash**, **DeepSeek**, **Groq (LLaMA-3)**, or any model via **OpenRouter**.
+- **Impact & Metrics Extractor**: The AI scans all resume bullet points and explicitly extracts those that fail to quantify their impact, visually prompting the user to rewrite them using the XYZ formula.
+- **Client-Side Weak Phrase Detection**: An ultra-fast, zero-latency browser NLP engine scans the raw text of your resume and highlights weak, passive, or cliché verbs (like "helped with" or "responsible for") within their exact sentence context.
 - **Deep GitHub Integration**: Automatically detects GitHub usernames from the resume and securely fetches the candidate's real repository data, commit history, and top languages to factor into the final score.
 - **Dynamic Job Description Matching**: Paste a specific Job Description to instantly tailor the AI's scoring rubric. The AI will heavily scrutinize the candidate against the exact requirements of the role.
 - **Local History & PDF Export**: Your evaluations are securely saved to your browser's local `localStorage`. Generate a clean, professional PDF report of the evaluation dashboard with a single click.
